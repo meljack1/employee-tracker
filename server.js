@@ -5,7 +5,6 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const Queries = require('./lib/queries.js');
 
-
 const PORT = process.env.PORT || 3001;
 const app = express();
 
