@@ -24,6 +24,7 @@ const db = mysql.createConnection(
 const queries = new Queries(db);
 
 function chooseAction() {
+  console.log(`\n`);
   inquirer
     .prompt([
     {
