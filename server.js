@@ -15,7 +15,7 @@ const db = mysql.createConnection(
   {
     host: 'localhost',
     user: 'root',
-    // Put your local password here
+    // Put your MySQL password between the quotation marks below:
     password: '',
     database: 'employees_db',
   },
@@ -30,7 +30,16 @@ function chooseAction() {
     {
       type: 'list',
       message: "What would you like to do?",
-      choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role", "Quit"],
+      choices: [
+        "View all departments", 
+        "View all roles", 
+        "View all employees", 
+        "Add a department", 
+        "Add a role", 
+        "Add an employee", 
+        "Update an employee role", 
+        "Quit"
+      ],
       name: 'action',
     }
   ])
@@ -132,7 +141,13 @@ async function getEmployeeInfo() {
     },
   ])
     .then((response) => {
-      queries.addEmployee(response.firstName, response.lastName, response.role, response.manager, chooseAction);
+      queries.addEmployee(
+        response.firstName, 
+        response.lastName, 
+        response.role,
+        response.manager, 
+        chooseAction
+      );
   });
 }
 
@@ -155,7 +170,11 @@ async function getUpdatedEmployeeInfo() {
     },
   ])
     .then((response) => {
-      queries.updateEmployee(response.employee, response.role, chooseAction);
+      queries.updateEmployee(
+        response.employee, 
+        response.role, 
+        chooseAction
+        );
   });
 }
 
