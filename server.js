@@ -16,7 +16,7 @@ const db = mysql.createConnection(
     host: 'localhost',
     user: 'root',
     // Put your local password here
-    password: '',
+    password: 'J281063h',
     database: 'employees_db',
   },
   console.log(`Connected to the database.`)
@@ -72,7 +72,8 @@ function getDepartmentInfo() {
   });
 }
 
-function getRoleInfo() {
+async function getRoleInfo() {
+  const departmentChoices = await queries.getDepartmentChoices();
   inquirer
     .prompt([
     {
@@ -88,12 +89,11 @@ function getRoleInfo() {
     {
       type: 'list',
       message: "Which department is the new role part of?",
-      choices: queries.getDepartmentChoices(),
+      choices: departmentChoices,
       name: 'department',
     },
   ])
     .then((response) => {
-      console.log(response.department, response.department.id)
       queries.addRole(response.title, response.salary, response.department, chooseAction);
   });
 }
