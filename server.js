@@ -17,7 +17,7 @@ const db = mysql.createConnection(
     host: 'localhost',
     user: 'root',
     // Put your local password here
-    password: 'J281063h',
+    password: '',
     database: 'employees_db',
   },
   console.log(`Connected to the database.`)
@@ -49,6 +49,9 @@ function chooseAction() {
           break;
         case "Add a department":
           getDepartmentInfo();
+          break;
+        case "Add a role":
+          getRoleInfo();
           break;
         default: 
           db.end();
@@ -91,6 +94,7 @@ function getRoleInfo() {
     },
   ])
     .then((response) => {
+      console.log(response.department, response.department.id)
       queries.addRole(response.title, response.salary, response.department, chooseAction);
   });
 }
