@@ -44,7 +44,6 @@ function chooseAction() {
           break;
         case "View all employees":
           queries.viewEmployees(chooseAction);
-          chooseAction();
           break;
         case "Add a department":
           getDepartmentInfo();
@@ -54,6 +53,9 @@ function chooseAction() {
           break;
         case "Add an employee":
           getEmployeeInfo();
+          break;
+        case "Update an employee role":
+          getUpdatedEmployeeInfo();
           break;
         default: 
           db.end();
@@ -103,7 +105,7 @@ async function getRoleInfo() {
 
 async function getEmployeeInfo() {
   const roleChoices = await queries.getRoleChoices();
-  const managerChoices = await queries.getManagerChoices();
+  const managerChoices = await queries.getEmployeeChoices();
   inquirer
     .prompt([
     {
@@ -134,12 +136,31 @@ async function getEmployeeInfo() {
   });
 }
 
+async function getUpdatedEmployeeInfo() {
+  const roleChoices = await queries.getRoleChoices();
+  const employeeChoices = await queries.getEmployeeChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which employee would you like to update the role of?",
+      choices: employeeChoices,
+      name: 'employee',
+    },
+    {
+      type: 'list',
+      message: "What would you like the employee's new role to be?",
+      choices: roleChoices,
+      name: 'role',
+    },
+  ])
+    .then((response) => {
+      queries.updateEmployee(response.employee, response.role, chooseAction);
+  });
+}
+
 app.use((req, res) => {
   res.status(404).end();
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });
 
 chooseAction();
