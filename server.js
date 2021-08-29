@@ -16,7 +16,7 @@ const db = mysql.createConnection(
     host: 'localhost',
     user: 'root',
     // Put your local password here
-    password: 'J281063h',
+    password: '',
     database: 'employees_db',
   },
   console.log(`Connected to the database.`)
@@ -51,6 +51,9 @@ function chooseAction() {
           break;
         case "Add a role":
           getRoleInfo();
+          break;
+        case "Add an employee":
+          getEmployeeInfo();
           break;
         default: 
           db.end();
@@ -95,6 +98,39 @@ async function getRoleInfo() {
   ])
     .then((response) => {
       queries.addRole(response.title, response.salary, response.department, chooseAction);
+  });
+}
+
+async function getEmployeeInfo() {
+  const roleChoices = await queries.getRoleChoices();
+  const managerChoices = await queries.getManagerChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'input',
+      message: "What is the new employee's first name?",
+      name: 'firstName',
+    },
+    {
+      type: 'input',
+      message: "What is the new employee's last name?",
+      name: 'lastName',
+    },
+    {
+      type: 'list',
+      message: "What is the new employee's role?",
+      choices: roleChoices,
+      name: 'role',
+    },
+    {
+      type: 'list',
+      message: "What is the new employee's manager?",
+      choices: managerChoices,
+      name: 'manager',
+    },
+  ])
+    .then((response) => {
+      queries.addEmployee(response.firstName, response.lastName, response.role, response.manager, chooseAction);
   });
 }
 
