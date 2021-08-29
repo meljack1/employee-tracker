@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const cTable = require('console.table');
 const Queries = require('./lib/queries.js');
+
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -15,7 +17,7 @@ const db = mysql.createConnection(
     host: 'localhost',
     user: 'root',
     // Put your local password here
-    password: '',
+    password: 'J281063h',
     database: 'employees_db',
   },
   console.log(`Connected to the database.`)
@@ -24,7 +26,6 @@ const db = mysql.createConnection(
 const queries = new Queries(db);
 
 function chooseAction() {
-  console.log(`\n`);
   inquirer
     .prompt([
     {
@@ -32,29 +33,65 @@ function chooseAction() {
       message: "What would you like to do?",
       choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role", "Quit"],
       name: 'action',
-    },
-    {
-      type: 'input',
-      message: "What do you want to call the new department?",
-      when: (response) => response.action === "Add a department",
-      name: 'departmentName',
     }
   ])
     .then((response) => {
       switch (response.action) {
         case "View all departments": 
-          queries.viewDepartments();
-          chooseAction();
+          queries.viewDepartments(chooseAction);
           break;
         case "View all roles":
-          queries.viewRoles();
-          chooseAction();
+          queries.viewRoles(chooseAction);
           break;
         case "View all employees":
-          queries.viewEmployees();
+          queries.viewEmployees(chooseAction);
           chooseAction();
           break;
+        case "Add a department":
+          getDepartmentInfo();
+          break;
+        default: 
+          db.end();
       }
+  });
+}
+
+function getDepartmentInfo() {
+  inquirer
+    .prompt([
+    {
+      type: 'input',
+      message: "What do you want to call the new department?",
+      name: 'name',
+    },
+  ])
+    .then((response) => {
+      queries.addDepartment(response.name, chooseAction);
+  });
+}
+
+function getRoleInfo() {
+  inquirer
+    .prompt([
+    {
+      type: 'input',
+      message: "What do you want to call the new role?",
+      name: 'title',
+    },
+    {
+      type: 'input',
+      message: "What is the new role's salary?",
+      name: 'salary',
+    },
+    {
+      type: 'list',
+      message: "Which department is the new role part of?",
+      choices: queries.getDepartmentChoices(),
+      name: 'department',
+    },
+  ])
+    .then((response) => {
+      queries.addRole(response.title, response.salary, response.department, chooseAction);
   });
 }
 
