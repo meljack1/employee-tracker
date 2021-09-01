@@ -38,6 +38,7 @@ function chooseAction() {
         "Add a role", 
         "Add an employee", 
         "Update an employee role", 
+        "Update an employee manager",
         "Quit"
       ],
       name: 'action',
@@ -64,7 +65,10 @@ function chooseAction() {
           getEmployeeInfo();
           break;
         case "Update an employee role":
-          getUpdatedEmployeeInfo();
+          getUpdatedEmployeeRoleInfo();
+          break;
+        case "Update an employee manager":
+          getUpdatedEmployeeManagerInfo();
           break;
         default: 
           db.end();
@@ -151,7 +155,7 @@ async function getEmployeeInfo() {
   });
 }
 
-async function getUpdatedEmployeeInfo() {
+async function getUpdatedEmployeeRoleInfo() {
   const roleChoices = await queries.getRoleChoices();
   const employeeChoices = await queries.getEmployeeChoices();
   inquirer
@@ -173,6 +177,32 @@ async function getUpdatedEmployeeInfo() {
       queries.updateEmployee(
         response.employee, 
         response.role, 
+        chooseAction
+        );
+  });
+}
+
+async function getUpdatedEmployeeManagerInfo() {
+  const employeeChoices = await queries.getEmployeeChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which employee would you like to update the manager of?",
+      choices: employeeChoices,
+      name: 'employee',
+    },
+    {
+      type: 'list',
+      message: "Who would you like the employee's new manager to be?",
+      choices: employeeChoices,
+      name: 'manager',
+    },
+  ])
+    .then((response) => {
+      queries.updateEmployee(
+        response.employee, 
+        response.manager, 
         chooseAction
         );
   });
