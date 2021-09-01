@@ -34,6 +34,7 @@ function chooseAction() {
         "View all departments", 
         "View all roles", 
         "View all employees", 
+        "View employees by manager",
         "Add a department", 
         "Add a role", 
         "Add an employee", 
@@ -55,20 +56,23 @@ function chooseAction() {
         case "View all employees":
           queries.viewEmployees(chooseAction);
           break;
+        case "View employees by manager":
+          viewByManager();
+          break;
         case "Add a department":
-          getDepartmentInfo();
+          addDepartment();
           break;
         case "Add a role":
-          getRoleInfo();
+          addRole();
           break;
         case "Add an employee":
-          getEmployeeInfo();
+          addEmployee();
           break;
         case "Update an employee role":
-          getUpdatedEmployeeRoleInfo();
+          updateEmployeeRole();
           break;
         case "Update an employee manager":
-          getUpdatedEmployeeManagerInfo();
+          updateEmployeeManager();
           break;
         default: 
           db.end();
@@ -76,7 +80,26 @@ function chooseAction() {
   });
 }
 
-function getDepartmentInfo() {
+async function viewByManager() {
+  const managerChoices = await queries.getEmployeeChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which manager would you like to view the employees of?",
+      choices: managerChoices,
+      name: 'manager',
+    },
+  ])
+    .then((response) => {
+      queries.viewByManager(
+        response.manager, 
+        chooseAction
+      );
+  });
+}
+
+function addDepartment() {
   inquirer
     .prompt([
     {
@@ -90,7 +113,7 @@ function getDepartmentInfo() {
   });
 }
 
-async function getRoleInfo() {
+async function addRole() {
   const departmentChoices = await queries.getDepartmentChoices();
   inquirer
     .prompt([
@@ -116,7 +139,7 @@ async function getRoleInfo() {
   });
 }
 
-async function getEmployeeInfo() {
+async function addEmployee() {
   const roleChoices = await queries.getRoleChoices();
   const managerChoices = await queries.getEmployeeChoices();
   inquirer
@@ -155,7 +178,7 @@ async function getEmployeeInfo() {
   });
 }
 
-async function getUpdatedEmployeeRoleInfo() {
+async function updateEmployeeRole() {
   const roleChoices = await queries.getRoleChoices();
   const employeeChoices = await queries.getEmployeeChoices();
   inquirer
@@ -174,7 +197,7 @@ async function getUpdatedEmployeeRoleInfo() {
     },
   ])
     .then((response) => {
-      queries.updateEmployee(
+      queries.updateEmployeeRole(
         response.employee, 
         response.role, 
         chooseAction
@@ -182,7 +205,7 @@ async function getUpdatedEmployeeRoleInfo() {
   });
 }
 
-async function getUpdatedEmployeeManagerInfo() {
+async function updateEmployeeManager() {
   const employeeChoices = await queries.getEmployeeChoices();
   inquirer
     .prompt([
@@ -200,7 +223,7 @@ async function getUpdatedEmployeeManagerInfo() {
     },
   ])
     .then((response) => {
-      queries.updateEmployee(
+      queries.updateEmployeeManager(
         response.employee, 
         response.manager, 
         chooseAction
