@@ -41,6 +41,9 @@ function chooseAction() {
         "Add an employee", 
         "Update an employee role", 
         "Update an employee manager",
+        "Delete a department",
+        "Delete a role",
+        "Delete an employee",
         "Quit"
       ],
       name: 'action',
@@ -77,6 +80,15 @@ function chooseAction() {
           break;
         case "Update an employee manager":
           updateEmployeeManager();
+          break;
+        case "Delete a department":
+          deleteDepartment();
+          break;
+        case "Delete a role":
+          deleteRole();
+          break;
+        case "Delete an employee":
+          deleteEmployee();
           break;
         default: 
           db.end();
@@ -251,6 +263,63 @@ async function updateEmployeeManager() {
         response.manager, 
         chooseAction
         );
+  });
+}
+
+async function deleteDepartment() {
+  const departmentChoices = await queries.getDepartmentChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which department would you like to delete?",
+      choices: departmentChoices,
+      name: 'department',
+    },
+  ])
+    .then((response) => {
+      queries.deleteDepartment(
+        response.department, 
+        chooseAction
+      );
+  });
+}
+
+async function deleteRole() {
+  const roleChoices = await queries.getRoleChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which role would you like to delete?",
+      choices: roleChoices,
+      name: 'role',
+    },
+  ])
+    .then((response) => {
+      queries.deleteRole(
+        response.role, 
+        chooseAction
+      );
+  });
+}
+
+async function deleteEmployee() {
+  const employeeChoices = await queries.getEmployeeChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which employee would you like to delete?",
+      choices: employeeChoices,
+      name: 'employee',
+    },
+  ])
+    .then((response) => {
+      queries.deleteEmployee(
+        response.employee, 
+        chooseAction
+      );
   });
 }
 
