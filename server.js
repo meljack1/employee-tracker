@@ -35,6 +35,7 @@ function chooseAction() {
         "View all roles", 
         "View all employees", 
         "View employees by manager",
+        "View employees by department",
         "Add a department", 
         "Add a role", 
         "Add an employee", 
@@ -58,6 +59,9 @@ function chooseAction() {
           break;
         case "View employees by manager":
           viewByManager();
+          break;
+        case "View employees by department":
+          viewByDepartment();
           break;
         case "Add a department":
           addDepartment();
@@ -94,6 +98,25 @@ async function viewByManager() {
     .then((response) => {
       queries.viewByManager(
         response.manager, 
+        chooseAction
+      );
+  });
+}
+
+async function viewByDepartment() {
+  const departmentChoices = await queries.getDepartmentChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which department would you like to view the employees of?",
+      choices: departmentChoices,
+      name: 'department',
+    },
+  ])
+    .then((response) => {
+      queries.viewByDepartment(
+        response.department, 
         chooseAction
       );
   });
