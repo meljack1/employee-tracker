@@ -36,6 +36,7 @@ function chooseAction() {
         "View all employees", 
         "View employees by manager",
         "View employees by department",
+        "View total utilised budget of department",
         "Add a department", 
         "Add a role", 
         "Add an employee", 
@@ -65,6 +66,9 @@ function chooseAction() {
           break;
         case "View employees by department":
           viewByDepartment();
+          break;
+        case "View total utilised budget of department":
+          viewBudget();
           break;
         case "Add a department":
           addDepartment();
@@ -128,6 +132,25 @@ async function viewByDepartment() {
   ])
     .then((response) => {
       queries.viewByDepartment(
+        response.department, 
+        chooseAction
+      );
+  });
+}
+
+async function viewBudget() {
+  const departmentChoices = await queries.getDepartmentChoices();
+  inquirer
+    .prompt([
+    {
+      type: 'list',
+      message: "Which department would you like to view the total utilised budget for?",
+      choices: departmentChoices,
+      name: 'department',
+    },
+  ])
+    .then((response) => {
+      queries.viewBudget(
         response.department, 
         chooseAction
       );
