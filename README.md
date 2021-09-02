@@ -19,18 +19,19 @@ Run the following command from the terminal:
 ```npm i```
 
 ## Usage
-Ensure MySQL is installed and set up on your computer before using this application.
+1. Ensure MySQL is installed and set up on your computer before using this application. A guide can be found [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/)
 
-Navigate to ```./employee-tracker```
+2. Navigate to ```./employee-tracker```
 
-Initialise the database by running the following commands in the terminal: 
+3. Initialise the database by running the following commands in the terminal: 
 ```mysql -u root -p```
 ```source db/schema.sql```
 ```source db/seeds.sql```
 
-In ```server.js```, update the password (line 19) to your own MySQL password.
+4. In ```server.js```, update the password (line 19) to your own MySQL password. For example: 
+```password: 'MyPassword123'```
 
-Run the following command from the terminal: 
+5. Run the following command from the terminal: 
 
 ```node server.js```
 
